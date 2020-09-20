@@ -1,0 +1,211 @@
+package com.pack;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.Connection;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * Servlet implementation class PetServlet
+ */
+@WebServlet("/PetServlet")
+public class PetServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+    /**
+     * Default constructor. 
+     */
+    public PetServlet() {
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		 response.setContentType("text/html");
+         PrintWriter pw=response.getWriter();
+         String Firstname=request.getParameter("fname");
+         String Lastname=request.getParameter("lname");
+         String Address=request.getParameter("addr");
+         String Email=request.getParameter("ename");
+         String Cityname=request.getParameter("cname");
+         String Statename=request.getParameter("sname");
+         int Phoneno=Integer.parseInt(request.getParameter("pno"));
+         String Petname=request.getParameter("pname");
+         String Petypename=request.getParameter("ptname");
+         int sage=Integer.parseInt(request.getParameter("page"));
+         Connection con=null;
+         try{
+             Class.forName("com.mysql.jdbc.Driver");
+             con=DriverManager.getConnection("jdbc:mysql://localhost:3308/petfrom", "root","root");
+             PreparedStatement ps=con.prepareStatement("insert into student(Firstname,Lastname,Address,Email, Cityname,Statename,Phoneno,Petname,Petypename,sage)values(?,?,?,?,?,?,?,?,?,?)");
+             ps.setString(1, Firstname);
+             ps.setString(2, Lastname);
+             ps.setString(3, Address);
+             ps.setString(4, Email);
+             ps.setString(5, Cityname);
+             ps.setString(6, Statename);  
+             ps.setInt(7, Phoneno);
+             ps.setString(8, Petname);
+             ps.setString(9, Petypename);
+             ps.setInt(10, sage);
+           
+            
+             int i = ps.executeUpdate();
+             if(i==1){
+                         RequestDispatcher rd=request.getRequestDispatcher("/success.html");
+                         rd.forward(request, response);
+             }
+         }
+         catch(Exception e){
+                         System.out.println(e);
+         }
+	}
+
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+First_name:<input type="text" name="fname"><br/>
+Last_name:<input type=text" name="lname"><br/>
+Address:<input type="text" name="addr"><br/>
+Email:<input type="email" name="ename"><br/>
+City:<input type="text" name="cname"><br/>
+State:<input type="text" name="sname"><br/>
+Phone_Number:<input type="number" name="pno"><br/>
+Pet_name:<input type="text" name="pname"><br/>
+Pet_Type:<input type="text" name="ptname"><br/>
+Pet_Age:<input type="number" name="page"><br/>
+</body>
+</html>
+
+2.
+
+Login.html:
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+User_name:<input type="text" value="name">
+Password:<input type="text" value="pass">
+<form action="http://localhost:8085/Validationfrom/LoginServlet">
+<input type="submit" value="login">
+</form>
+<form action="http://localhost:8085/Validationfrom/LogoutServlet">
+<input type="submit" value="Logout">
+</form>
+</body>
+</html>
+
+LoginServlet:
+package com.pack;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * Servlet implementation class LoginServlet
+ */
+//@WebServlet("/LoginServlet")
+public class LoginServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+    /**
+     * Default constructor. 
+     */
+    public LoginServlet() {
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		 response.setContentType("text/html");
+         PrintWriter pw=response.getWriter();
+         String Username=request.getParameter("name");
+         String Password=request.getParameter("pass");
+         Connection con=null;
+         try{
+             Class.forName("com.mysql.jdbc.Driver");
+             con=DriverManager.getConnection("jdbc:mysql://localhost:3306/petfrom", "root","root");
+             PreparedStatement ps=con.prepareStatement("insert into student(name,pass)values(?,?)");
+             ps.setString(1, Username);
+             ps.setString(2, Password);
+             int i = ps.executeUpdate();
+             if(i==1){
+                         RequestDispatcher rd=request.getRequestDispatcher("/Validationsuccess.html");
+                         rd.forward(request, response);
+             }
+             else {
+            	 RequestDispatcher rd=request.getRequestDispatcher("/Validationerror.html");
+                 rd.forward(request, response);
+             }
+         }
+         catch(Exception e){
+             System.out.println(e);
+}
+	}
+
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+	}
+
+}
+
+ValidationSuccess:
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+Validation is Success
+</body>
+</html>
+ValidationError:
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+Validation is Success
+</body>
+</html>
